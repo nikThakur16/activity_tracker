@@ -1,0 +1,155 @@
+/* Body styling */
+.custom-body {
+    background-color: #0D0D0D;
+    height: 550px;
+    width: 750px;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  
+  /* Card container */
+  .card {
+    background-color: #030303;
+    height: 300px;
+    width: 300px;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  /* Progress ring */
+  .progress-ring {
+    background: conic-gradient(
+      from 0deg,
+      #00ffe0 0%,
+      #00ffd5 25%,
+      #00e0ff 45%,
+      #2c2c2c 45%,
+      #2c2c2c 100%
+    );
+    padding: 10px;
+    border-radius: 50%;
+    height: 15rem;
+    width: 15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow:
+      0 0 8px rgba(0, 255, 224, 0.3),
+      0 0 16px rgba(0, 255, 224, 0.2),
+      inset 0 0 8px rgba(255, 255, 255, 0.03);
+    transition: all 0.4s ease;
+    animation: softPulse 3s ease-in-out infinite;
+  }
+  
+  /* Optional: subtle animated glow pulse */
+  @keyframes softPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 8px rgba(0, 255, 224, 0.3),
+        0 0 16px rgba(0, 255, 224, 0.2),
+        inset 0 0 8px rgba(255, 255, 255, 0.03);
+    }
+    50% {
+      box-shadow:
+        0 0 12px rgba(0, 255, 224, 0.4),
+        0 0 20px rgba(0, 255, 224, 0.3),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+  }
+  
+  .progress-ring {
+    animation: pulse-glow 2.5s ease-in-out infinite;
+  }
+  
+  
+  /* Inner circle */
+  .inner-circle {
+    background-color: #0D0D0D;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Icon */
+  .icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .settings-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    border-radius: 50%;
+    background-color: #313131;
+    padding: 0.1rem;
+
+    &:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+        color: #1abc9c;
+    }   
+  }
+  .reset-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 50%;
+    background-color: #313131;
+    padding: 0.1rem;
+
+    &:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+        color: #1abc9c;
+    }   
+  }
+  
+  /* Timer text */
+  .timer {
+    color: white;
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  /* Button */
+  .btn {
+    background-color: #313131;
+    color: white;
+    font-size: 0.875rem;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  
+    transition: all 0.3s ease;
+    &:hover {
+        transform: scale(0.8);
+        opacity: 0.8;
+        
+    }   
+
+  }

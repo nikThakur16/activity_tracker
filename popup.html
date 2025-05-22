@@ -1,0 +1,87 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <link href="popup.css" rel="stylesheet" />
+  <title>Focus/Relax Timer</title>
+</head>
+<body class="custom-body">
+
+  <!-- FOCUS Card -->
+  <div class="card">
+    <div class="progress-ring">
+      <div class="inner-circle">
+        <img
+          src="assets/icons8-coffee-50.png"
+          alt="coffee icon"
+          class="icon"
+        />
+        <h1 class="timer" id="focus-timer">00:00:00</h1>
+        <button class="btn" id="focus-btn">FOCUS</button>
+        <img
+          id="focus-icon"
+          width="30"
+          height="30"
+          src="https://img.icons8.com/ios-glyphs/30/FFFFFF/play--v1.png"
+          alt="focus icon"
+        />
+      </div>
+    </div>
+    <img
+      src="assets/icons8-gear-64.png"
+      alt="settings icon"
+      class="settings-icon"
+    />
+    <img
+      id="focus-reset-icon"
+      class="reset-icon"
+      width="50"
+      height="50"
+      src="https://img.icons8.com/ios-filled/50/FFFFFF/synchronize.png"
+      alt="reset focus timer"
+    />
+  </div>
+
+  <!-- RELAX Card -->
+  <div class="card">
+    <div class="progress-ring">
+      <div class="inner-circle">
+        <img
+          src="assets/icons8-coffee-50.png"
+          alt="coffee icon"
+          class="icon"
+        />
+        <h1 class="timer" id="relax-timer">00:00:00</h1>
+        <button class="btn" id="relax-btn">RELAX</button>
+        <img
+          id="relax-icon"
+          width="30"
+          height="30"
+          src="https://img.icons8.com/ios-glyphs/30/FFFFFF/play--v1.png"
+          alt="relax icon"
+        />
+      </div>
+    </div>
+    <img
+      src="assets/icons8-gear-64.png"
+      alt="settings icon"
+      class="settings-icon"
+    />
+    <img
+      id="relax-reset-icon"
+      class="reset-icon"
+      width="50"
+      height="50"
+      src="https://img.icons8.com/ios-filled/50/FFFFFF/synchronize.png"
+      alt="reset relax timer"
+    />
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
