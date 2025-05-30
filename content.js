@@ -1,6 +1,9 @@
 // Only run on http(s) pages to avoid issues with system pages
-if (window.location.protocol.startsWith('http')) {
-  const TRACKER_FLAG = '__focusTrackerLoaded__';
+
+
+if (window.location.protocol.startsWith("http")) {
+  chrome.runtime.sendMessage({ action: "CONTENT_READY" });
+  const TRACKER_FLAG = "__focusTrackerLoaded__";
 
   if (!window[TRACKER_FLAG]) {
     window[TRACKER_FLAG] = true;
@@ -13,7 +16,11 @@ if (window.location.protocol.startsWith('http')) {
 
       try {
         console.log(`[Activity] ${type} at ${new Date().toISOString()}`);
-        chrome.runtime.sendMessage({ activityType: type, timestamp: Date.now() });
+
+        chrome.runtime.sendMessage({
+          activityType: type,
+          timestamp: Date.now(),
+        });
       } catch (e) {
         console.warn("Failed to send activity message:", e);
       }
@@ -30,10 +37,34 @@ if (window.location.protocol.startsWith('http')) {
 
     // Mouse click
     document.addEventListener("click", () => sendActivity("click"));
+    document.addEventListener("keypress", () => sendActivity("keypress"));
+
+    document.addEventListener("keyup", () => sendActivity("keyup"));
+
+    document.addEventListener("wheel", () => sendActivity("wheel"));
+
+    document.addEventListener("mouseup", () => sendActivity("mouseup"));
+    document.addEventListener("mousedown", () => sendActivity("mousedown"));
+   
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        // Tab is inactive or user switched to another tab/window
+        console.log("User left the tab");
+        sendActivity("tab-inactive");
+      } else if (document.visibilityState === "visible") {
+        // Tab is active again
+        console.log("User returned to the tab");
+        sendActivity("tab-active");
+      }
+    });
+
+
 
     // Keyboard press (with debug and input check)
     document.addEventListener("keydown", (e) => {
-      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName))
+        return;
       console.log("Keydown detected", e);
       sendActivity("keyboard");
     });
@@ -56,3 +87,4 @@ if (window.location.protocol.startsWith('http')) {
     console.log("[FocusTracker] Content script loaded ✅");
   }
 }
+
