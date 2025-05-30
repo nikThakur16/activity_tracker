@@ -18,12 +18,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       enableMonitoring();
       resetFocusInactivityTimer();
       console.log("Focus started");
-    } else {
+    } else if (message.state === "STOPPED") {
       focusActive = false;
       chrome.storage.local.set({ focusFrozenByInactivity: false });
       disableMonitoring();
       clearFocusInactivityTimer();
-      console.log("Focus stopped");
+      console.log("Focus stopped (via pause or explicit stop)");
+    } else {
+      console.warn("Received unknown FOCUS state:", message.state);
     }
   } else if (message.action === "RELAX") {
     focusActive = false;
@@ -31,14 +33,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     disableMonitoring();
     clearFocusInactivityTimer();
     console.log("Relax started/stopped");
-  } else if(message.action==="STOPPED"){
-    focusActive = false;
-    chrome.storage.local.set({ focusFrozenByInactivity: false });
-    disableMonitoring();
-    clearFocusInactivityTimer();
- 
-  }
-  else if (message.action === "RESET_FOCUS") {
+  } else if (message.action === "RESET_FOCUS") {
     focusActive = false;
     disableMonitoring();
     clearFocusInactivityTimer();
@@ -109,17 +104,41 @@ function enableMonitoring() {
           if (chrome.runtime.lastError) {
             console.warn('Script inject failed or already injected:', chrome.runtime.lastError.message);
           } else {
-            chrome.tabs.sendMessage(tab.id, { action: "ENABLE_MONITORING" }, (response) => {
-              if (chrome.runtime.lastError) {
-                console.warn("Could not send message to tab:", chrome.runtime.lastError.message);
-              }
-            });
+            
+            
+            // chrome.tabs.sendMessage(tab.id, { action: "ENABLE_MONITORING" }, (response) => {
+            //   if (chrome.runtime.lastError) {
+            //     console.warn("Could not send message to tab:", chrome.runtime.lastError.message);
+            //   }
+            // });
           }
         });
       }
     });
   });
 }
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "CONTENT_READY" && sender.tab?.id) {
+    console.log("Content ready for tab:", sender.tab.id);
+  
+    chrome.tabs.sendMessage(sender.tab.id, { action: "ENABLE_MONITORING" });
+  }
+});
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  console.log("Tab switched");
+
+});
+
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  if (windowId === chrome.windows.WINDOW_ID_NONE) {
+    // No Chrome window is focused (user switched apps)
+    console.log("Window unfocused");
+  } else {
+    console.log("Chrome window focused");
+    
+  }
+});
+
 
 function disableMonitoring() {
   chrome.tabs.query({}, (tabs) => {
