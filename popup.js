@@ -125,17 +125,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateUI(mode) {
     if (mode === "FOCUSING") {
       focusBtn.textContent = focusPaused ? "FOCUS" : "FOCUSING";
-      relaxBtn.textContent = "RELAX";
+      relaxBtn.textContent = "START MEETING";
       focusIcon.src = focusPaused ? playIcon : pauseIcon;
       relaxIcon.src = playIcon;
     } else if (mode === "RELAXING") {
       focusBtn.textContent = "FOCUS";
-      relaxBtn.textContent = relaxPaused ? "RELAX" : "RELAXING";
+      relaxBtn.textContent = relaxPaused ? "START MEETING" : "IN-MEETING";
       focusIcon.src = playIcon;
       relaxIcon.src = relaxPaused ? playIcon : pauseIcon;
     } else {
       focusBtn.textContent = "FOCUS";
-      relaxBtn.textContent = "RELAX";
+      relaxBtn.textContent = "START MEETING";
       focusIcon.src = playIcon;
       relaxIcon.src = playIcon;
     }
@@ -287,6 +287,8 @@ document.addEventListener("DOMContentLoaded", () => {
               stopFocusTimer();
               setTimerDisplay("focus-timer", formatTime(focusElapsed));
               stopRelaxTimer();
+              // Explicitly signal the background that focus has stopped
+              chrome.runtime.sendMessage({ action: "FOCUS", state: "STOPPED" });
             }
           );
         } else {
@@ -312,8 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
               updateUI(mode);
               startFocusTimer();
               stopRelaxTimer();
-                // Explicitly signal the background that focus has stopped
-                chrome.runtime.sendMessage({ action: "FOCUS", state: "STOPPED" });
+                
             }
           );
         }
@@ -408,6 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
       focusStartTime = null;
       focusFrozenByInactivity = false;
       focusPaused = true;
+      updateFocusProgressRing();
       
       chrome.storage.local.set(
         { focusElapsed: 0, focusStartTime: null, focusPaused: true, focusFrozenByInactivity: false },
@@ -437,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
           stopRelaxTimer();
           chrome.storage.local.get(["mode"], (result) => {
             if (result.mode !== "RELAXING" || relaxPaused) {
-              relaxBtn.textContent = "RELAX";
+              relaxBtn.textContent = "START MEETING";
               relaxIcon.src = playIcon;
             }
           });
