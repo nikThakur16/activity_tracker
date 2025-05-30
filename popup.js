@@ -312,6 +312,8 @@ document.addEventListener("DOMContentLoaded", () => {
               updateUI(mode);
               startFocusTimer();
               stopRelaxTimer();
+                // Explicitly signal the background that focus has stopped
+                chrome.runtime.sendMessage({ action: "FOCUS", state: "STOPPED" });
             }
           );
         }
@@ -363,6 +365,8 @@ document.addEventListener("DOMContentLoaded", () => {
               stopRelaxTimer();
               setTimerDisplay("relax-timer", formatTime(relaxElapsed));
               stopFocusTimer();
+              // Explicitly signal the background that relax has stopped
+              chrome.runtime.sendMessage({ action: "RELAX", state: "STOPPED" });
             }
           );
         } else {

@@ -31,7 +31,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     disableMonitoring();
     clearFocusInactivityTimer();
     console.log("Relax started/stopped");
-  } else if (message.action === "RESET_FOCUS") {
+  } else if(message.action==="STOPPED"){
+    focusActive = false;
+    chrome.storage.local.set({ focusFrozenByInactivity: false });
+    disableMonitoring();
+    clearFocusInactivityTimer();
+ 
+  }
+  else if (message.action === "RESET_FOCUS") {
     focusActive = false;
     disableMonitoring();
     clearFocusInactivityTimer();
