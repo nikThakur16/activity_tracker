@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const timerElem = document.getElementById(timerId);
     if (timerElem) timerElem.textContent = timeStr;
   }
-
+// get the total time passed since the timer started for focus and relax
   function getElapsedTime(startTime, elapsed, paused) {
     if (paused || !startTime) return formatTime(elapsed);
     const now = Date.now();
@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return formatTime(totalElapsed);
   }
 
+  // format the time to hours:minutes:seconds
   function formatTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const hours = Math.floor(totalSeconds / 3600)
@@ -88,8 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // start the focus timer
   function startFocusTimer() {
+    // clear the interval if it exists
     if (focusTimerInterval) clearInterval(focusTimerInterval);
+    // set the interval to update the timer display every second
     focusTimerInterval = setInterval(() => {
       setTimerDisplay(
         "focus-timer",
@@ -100,14 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
+  // stop the focus timer
   function stopFocusTimer() {
+    
     if (focusTimerInterval) clearInterval(focusTimerInterval);
+    chrome.storage.local.set({mode: "NONE"})
+    chrome.runtime.sendMessage({ action: "DISABLE_MONITORING" });
     focusTimerInterval = null;
     setTimerDisplay("focus-timer", formatTime(focusElapsed));
   }
 
+  // start the relax timer
   function startRelaxTimer() {
     if (relaxTimerInterval) clearInterval(relaxTimerInterval);
+    chrome.storage.local.set({mode: "RELAXING"})
+
     relaxTimerInterval = setInterval(() => {
       setTimerDisplay(
         "relax-timer",
@@ -116,8 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
+  // stop the relax timer
   function stopRelaxTimer() {
     if (relaxTimerInterval) clearInterval(relaxTimerInterval);
+    chrome.storage.local.set({mode: "NONE"})
+    chrome.runtime.sendMessage({ action: "DISABLE_MONITORING" });
     relaxTimerInterval = null;
     setTimerDisplay("relax-timer", formatTime(relaxElapsed));
   }
@@ -202,14 +216,14 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (mode === "RELAXING" && !relaxPaused) {
         startRelaxTimer();
         stopFocusTimer();
-      } else if (focusFrozenByInactivity === true && mode === "FOCUSING") {
-        focusPaused = true;
-        focusStartTime = null;
-        focusElapsed = 0;
-        setTimerDisplay("focus-timer", formatTime(focusElapsed));
-        stopFocusTimer();
-        focusBtn.textContent = "START AGAIN";
-        focusIcon.src = playIcon;
+      } else if (focusFrozenByInactivity === true && mode === "FOCUSING" ) {
+          focusPaused = true;
+          focusStartTime = null;
+          focusElapsed = 0;
+          setTimerDisplay("focus-timer", formatTime(focusElapsed));
+          stopFocusTimer();
+          focusBtn.textContent = "START AGAIN";
+          focusIcon.src = playIcon;
       } else {
         stopFocusTimer();
         stopRelaxTimer();
@@ -276,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           chrome.storage.local.set(
             {
-              mode,
+              mode: "NONE",
               focusPaused: true,
               focusElapsed,
               focusStartTime: null,
@@ -284,9 +298,14 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             () => {
               updateUI(mode);
+
+           
               stopFocusTimer();
               setTimerDisplay("focus-timer", formatTime(focusElapsed));
               stopRelaxTimer();
+
+              // Explicitly signal the background that focus has stopped
+              chrome.runtime.sendMessage({ action: "FOCUS", state: "STOPPED" });
             }
           );
         } else {
@@ -345,6 +364,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (result.mode === "RELAXING" && !relaxPaused) {
           // Pause relax
           relaxPaused = true;
+   
+       
+
           if (result.relaxStartTime) {
             relaxElapsed += Date.now() - result.relaxStartTime;
           }
@@ -352,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           chrome.storage.local.set(
             {
-              mode,
+              mode: "NONE",
               relaxPaused: true,
               relaxElapsed,
               relaxStartTime: null,
@@ -363,12 +385,15 @@ document.addEventListener("DOMContentLoaded", () => {
               stopRelaxTimer();
               setTimerDisplay("relax-timer", formatTime(relaxElapsed));
               stopFocusTimer();
+
+              // Explicitly signal the background that relax has stopped
+              chrome.runtime.sendMessage({ action: "RELAX", state: "STOPPED" });
             }
           );
         } else {
           // Resume/start relax, pause focus
           relaxPaused = false;
-          relaxStartTime = Date.now();
+          relaxStartTime = Date.now() ;
           if (!focusPaused && result.focusStartTime) {
             focusElapsed += Date.now() - result.focusStartTime;
           }
@@ -388,11 +413,10 @@ document.addEventListener("DOMContentLoaded", () => {
               updateUI(mode);
               startRelaxTimer();
               stopFocusTimer();
+              updateActivity(mode);
             }
           );
         }
-
-        updateActivity(mode);
       }
     );
   });

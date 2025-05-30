@@ -11,8 +11,18 @@
   <title>Focus/Relax Timer</title>
 </head>
 <body class="custom-body">
+<div class="cal-time">
+ <!-- <div class="cal-time-focus">
+  <h1> Total Focused Time</h1>
+  <h1> 00:00:00</h1>
+ </div> -->
+ <!-- <div class="cal-time-relax">
+  <h1> Total Relaxed Time</h1>
+  <h1> 00:00:00</h1>
+ </div> -->
+</div>
 
-  <!-- FOCUS Card -->
+<div class="card-container">
   <div class="card">
     <div class="progress-ring">
       <div class="inner-circle">
@@ -46,41 +56,47 @@
       alt="reset focus timer"
     />
   </div>
-
-  <!-- RELAX Card -->
-  <div class="card">
-    <div class="progress-ring">
-      <div class="inner-circle">
-        <img
-          src="assets/icons8-coffee-50.png"
-          alt="coffee icon"
-          class="icon"
-        />
-        <h1 class="timer" id="relax-timer">00:00:00</h1>
-        <button class="btn" id="relax-btn">RELAX</button>
-        <img
-          id="relax-icon"
-          width="30"
-          height="30"
-          src="https://img.icons8.com/ios-glyphs/30/FFFFFF/play--v1.png"
-          alt="relax icon"
-        />
+    <!-- RELAX Card -->
+    <div class="card">
+      <div class="progress-ring">
+        <div class="inner-circle">
+          <img
+            src="assets/icons8-coffee-50.png"
+            alt="coffee icon"
+            class="icon"
+          />
+          <h1 class="timer" id="relax-timer">00:00:00</h1>
+          <button class="btn" id="relax-btn">RELAX</button>
+          <img
+            id="relax-icon"
+            width="30"
+            height="30"
+            src="https://img.icons8.com/ios-glyphs/30/FFFFFF/play--v1.png"
+            alt="relax icon"
+          />
+        </div>
       </div>
+      <img
+        src="assets/icons8-gear-64.png"
+        alt="settings icon"
+        class="settings-icon"
+      />
+      <img
+        id="relax-reset-icon"
+        class="reset-icon"
+        width="50"
+        height="50"
+        src="https://img.icons8.com/ios-filled/50/FFFFFF/synchronize.png"
+        alt="reset relax timer"
+      />
     </div>
-    <img
-      src="assets/icons8-gear-64.png"
-      alt="settings icon"
-      class="settings-icon"
-    />
-    <img
-      id="relax-reset-icon"
-      class="reset-icon"
-      width="50"
-      height="50"
-      src="https://img.icons8.com/ios-filled/50/FFFFFF/synchronize.png"
-      alt="reset relax timer"
-    />
-  </div>
+
+
+</div>
+
+  <!-- FOCUS Card -->
+ 
+
 
   <script src="popup.js"></script>
 </body>

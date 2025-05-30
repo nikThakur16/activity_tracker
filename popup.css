@@ -4,11 +4,48 @@
     height: 550px;
     width: 750px;
     display: flex;
+    flex-direction: column;
     gap: 1rem;
     align-items: center;
     justify-content: center;
     margin: 0;
   }
+  .card-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .cal-time {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .cal-time-focus {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .cal-time-relax {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .cal-time-focus h1 {
+    color: #ffffff;
+  }
+  .cal-time-relax h1 {
+    color: #ffffff;
+  }
+
+  
   
   /* Card container */
   .card {
