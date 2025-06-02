@@ -24,7 +24,7 @@
   }
   
   /* Progress ring */
-  .progress-ring {
+  .progress-ring-focus, .progress-ring-relax {
     background: conic-gradient(
       from 0deg,
       #00ffe0 0%,
@@ -65,9 +65,10 @@
     }
   }
   
-  .progress-ring {
+  .progress-ring-focus, .progress-ring-relax {
     animation: pulse-glow 2.5s ease-in-out infinite;
   }
+
   
   
   /* Inner circle */
