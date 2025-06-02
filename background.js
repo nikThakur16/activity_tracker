@@ -39,14 +39,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     clearFocusInactivityTimer();
     chrome.storage.local.set({ focusFrozenByInactivity: false });
     console.log("Focus reset: monitoring and inactivity timer stopped.");
-  } else if (message.action === "FOCUS_GOAL_COMPLETED") {
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'assets/icons8-clock.gif',
-      title: 'Focus Goal Completed!',
-      message: 'Congratulations! You reached your daily focus goal.'
-    });
-  }
+  } 
 });
 
 // ✅ Timer Control
@@ -165,3 +158,16 @@ function showInactivityNotification() {
     });
   }
 }
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if ( chrome.notifications && message.action === "FOCUS_GOAL_COMPLETED") {
+    chrome.notifications.create({
+      type: 'basic',
+      iconUrl: 'assets/icons8-clock.gif',
+      title: 'Focus Goal Completed!',
+      message: 'Congratulations! You reached your daily focus goal.'
+    });
+  }
+});
+

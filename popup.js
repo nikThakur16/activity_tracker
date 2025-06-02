@@ -26,15 +26,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let relaxPaused = true;
   let focusFrozenByInactivity = false;
 
+  
+
   // 1. Set your daily focus goal (in ms)
   const DAILY_FOCUS_GOAL_MS = 10 * 1000; // 10 seconds for demo
 
   let focusGoalCompleted = false;
 
+  //
   function setTimerDisplay(timerId, timeStr) {
     const timerElem = document.getElementById(timerId);
     if (timerElem) timerElem.textContent = timeStr;
   }
+  // 2. Get the elapsed time ( elapsed time means the time that has passed since the timer started)
 
   function getElapsedTime(startTime, elapsed, paused) {
     if (paused || !startTime) return formatTime(elapsed);
@@ -65,9 +69,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return Math.min(currentElapsed / DAILY_FOCUS_GOAL_MS, 1.0);
   }
 
+
+  function getRelaxProgress() {
+    let currentElapsed = relaxElapsed;
+    if (!relaxPaused && relaxStartTime) {
+      currentElapsed += Date.now() - relaxStartTime;
+    }
+    return Math.min(currentElapsed / DAILY_FOCUS_GOAL_MS, 1.0);
+  }
   // 3. Update the neon progress ring
   function updateFocusProgressRing() {
-    const progressRing = document.querySelector('.card .progress-ring');
+    const progressRing = document.querySelector('.card .progress-ring-focus');
     if (!progressRing) return;
     const percent = getFocusProgress();
     const angle = percent * 360;
@@ -77,6 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
       #2c2c2c ${angle}deg 360deg
     )`;
   }
+  function updateRelaxProgressRing() {
+    const progressRing = document.querySelector('.card .progress-ring-relax');
+    if (!progressRing) return;
+    const percent = getRelaxProgress();
+    const angle = percent * 360;
+    // Neon color: #00ffe0  
+    progressRing.style.background = `conic-gradient(
+      #00ffe0 ${angle}deg,
+      #2c2c2c ${angle}deg 360deg
+    )`;
+  } 
 
   // 4. Send completion notification (only once per completion)
   function checkFocusGoalCompletion() {
@@ -88,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 5. Start the focus timer
   function startFocusTimer() {
     if (focusTimerInterval) clearInterval(focusTimerInterval);
     focusTimerInterval = setInterval(() => {
@@ -113,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "relax-timer",
         getElapsedTime(relaxStartTime, relaxElapsed, relaxPaused)
       );
+      updateRelaxProgressRing();
     }, 1000);
   }
 
@@ -410,11 +435,14 @@ document.addEventListener("DOMContentLoaded", () => {
       focusFrozenByInactivity = false;
       focusPaused = true;
       updateFocusProgressRing();
+    
+      
       
       chrome.storage.local.set(
         { focusElapsed: 0, focusStartTime: null, focusPaused: true, focusFrozenByInactivity: false },
         () => {
           setTimerDisplay("focus-timer", formatTime(0));
+          chrome.runtime.sendMessage({ action: "FOCUS", state: "STOPPED" });
           stopFocusTimer();
           chrome.storage.local.get(["mode"], (result) => {
             if (result.mode !== "FOCUSING" || focusPaused) {
@@ -432,11 +460,14 @@ document.addEventListener("DOMContentLoaded", () => {
       relaxElapsed = 0;
       relaxStartTime = null;
       relaxPaused = true;
+      updateRelaxProgressRing();
+     
       chrome.storage.local.set(
         { relaxElapsed: 0, relaxStartTime: null, relaxPaused: true },
         () => {
           setTimerDisplay("relax-timer", formatTime(0));
           stopRelaxTimer();
+        
           chrome.storage.local.get(["mode"], (result) => {
             if (result.mode !== "RELAXING" || relaxPaused) {
               relaxBtn.textContent = "START MEETING";
@@ -477,4 +508,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 7. Also update the ring on popup load and after state loads
   updateFocusProgressRing();
+  updateRelaxProgressRing();
+
 });
